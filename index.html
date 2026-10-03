@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Arus yang Berpindah: Wajah Demografi dan Arus Migrasi Penduduk Indonesia</title>
+  <meta name="description"
+    content="Web story interaktif tentang struktur demografi 514 kabupaten/kota (SUPAS 2025) dan arus migrasi risen antarprovinsi (Long Form SP2020). Sumber: BPS.">
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧭</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+  <a class="sr-only" href="#bab1">Lewati ke isi</a>
+  <header class="site-head on-dark" id="siteHead">
+    <a class="brand" href="#top">Jejak Perpindahan</a>
+    <button class="menu-btn" id="menuBtn" aria-label="Buka menu" aria-expanded="false"
+      aria-controls="chapNav"><span></span><span></span><span></span></button>
+    <nav class="chap-nav" id="chapNav" aria-label="Bab">
+      <a href="#bab1" data-sec="bab1">Demografi</a>
+      <a href="#bab2" data-sec="bab2">Arus Migrasi</a>
+      <a href="#bab3" data-sec="bab3">Magnet 2025</a>
+      <a href="#bab4" data-sec="bab4">Tipologi</a>
+      <a href="#bab5" data-sec="bab5">Hierarki</a>
+      <a href="#jelajah" data-sec="jelajah">Eksplor Daerahmu</a>
+      <a href="#metodologi" data-sec="metodologi">Sumber Data</a>
+    </nav>
+    <div class="progress" id="progress"></div>
+  </header>
+
+  <main id="top">
+    <!-- ================= HERO ================= -->
+    <section class="hero" id="hero" aria-label="Pembuka">
+      <canvas id="heroCanvas" aria-hidden="true"></canvas>
+      <div class="hero-inner">
+        <h1>Arus yang Berpindah</h1>
+        <p class="lede">Ke mana arus itu mengalir? Seperti apa wajah daerah yang mereka tinggalkan atau tuju?
+          Ini kisah demografi 514 kabupaten/kota dan arus migrasi antarprovinsi dari data BPS.</p>
+        <div class="hero-stats" id="heroStats">
+          <div><b id="hs1">4,17 juta</b><span>orang pindah provinsi dalam lima tahun sebelum Sensus 2020</span></div>
+          <div><b id="hs2">−5,40%</b><span>migrasi neto risen DKI Jakarta 2025, pelepas terbesar di Indonesia</span>
+          </div>
+          <div><b id="hs3">19 dari 38</b><span>provinsi menjadi magnet penduduk pada 2025, dengan migrasi neto
+              positif</span></div>
+        </div>
+        <a class="scroll-cue" href="#bab1">Mulai membaca ↓</a>
+      </div>
+    </section>
+
+    <!-- ================= BAB 1 ================= -->
+    <section class="chapter" id="bab1">
+      <div class="wrap">
+        <div class="chap-head">
+          <p class="chap-kicker">Bab 1 <span class="topic-tag">514 kabupaten/kota</span></p>
+          <h2>Demografi kabupaten/kota</h2>
+          <p>Sebelum melihat ke mana orang berpindah, kita perlu melihat seperti apa penduduk di setiap daerah. Jumlah
+            kelahiran, kematian bayi, dan komposisi umur menunjukkan bahwa Indonesia sangat beragam. Jawa semakin
+            didominasi penduduk usia tua, sementara banyak wilayah di Indonesia timur memiliki
+            penduduk yang lebih muda.</p>
+        </div>
+
+        <div class="story" id="story1">
+          <div class="stage" id="mapStage">
+            <div class="stage-bar">
+              <label class="ctl-label" for="mapVar">Indikator</label>
+              <select id="mapVar"></select>
+              <div class="seg" id="mapMode" role="group" aria-label="Jenis peta">
+                <button data-v="choropleth" aria-pressed="true">Choropleth</button>
+                <button data-v="symbol">Simbol<span class="long"> proporsional</span></button>
+                <button data-v="bivariate">Bivariat</button>
+                <button data-v="lisa"><span class="long">Hotspot </span>LISA</button>
+              </div>
+              <div class="seg" id="mapClass" role="group" aria-label="Metode klasifikasi">
+                <button data-v="quantile" aria-pressed="true">Kuantil</button>
+                <button data-v="equal">Interval<span class="long"> sama</span></button>
+              </div>
+              <input type="search" id="mapSearch" list="kabList" placeholder="Cari kab/kota…"
+                aria-label="Cari kabupaten/kota">
+              <datalist id="kabList"></datalist>
+            </div>
+            <div class="stage-body" id="mapBody">
+              <svg id="mapSvg" role="img" aria-label="Peta kabupaten/kota Indonesia"></svg>
+              <div class="zoom-btns"><button id="zIn" aria-label="Perbesar">+</button><button id="zOut"
+                  aria-label="Perkecil">−</button><button id="zReset"
+                  aria-label="Kembali ke seluruh Indonesia">⌂</button></div>
+              <div class="legend" id="mapLegend"></div>
+              <aside class="drawer" id="drawer" aria-live="polite"></aside>
+            </div>
+            <div class="stage-cap" id="mapCap"></div>
+          </div>
+          <div class="story-side">
+            <div class="carousel" role="region" aria-roledescription="carousel" aria-label="Cerita peta demografi"
+              tabindex="0">
+              <div class="car-viewport">
+                <div class="car-track">
+                  <div class="step" data-step="0">
+                    <h3>Kelahiran mulai melambat</h3>
+                    <p>Angka kelahiran total (TFR) 2,1 adalah batas agar satu generasi tepat menggantikan generasi
+                      sebelumnya.</p><span class="big">119 kab/kota</span>
+                    <p>berada di bawah tingkat penggantian generasi. Warna makin gelap berarti tingkat kelahiran lebih
+                      tinggi.</p>
+                  </div>
+                  <div class="step" data-step="1">
+                    <h3>TFR kota - kota besar di Pulau Jawa paling rendah</h3>
+                    <p>Kota Jakarta Pusat mencatat TFR <span class="num">1,59</span> merupakan yang terendah di
+                      Indonesia, disusul
+                      Kota Yogyakarta <span class="num">1,65</span>, Kota Surabaya <span class="num">1,70</span>, dan
+                      Kota Tangerang Selatan <span class="num">1,71</span>.</p>
+                    <p class="step-note">Rata-rata tertimbang penduduk kab/kota di Pulau Jawa sekitar 2,0.</p>
+                  </div>
+                  <div class="step" data-step="2">
+                    <h3>TFR pada wilayah Indonesia Timur</h3>
+                    <p>Di ujung lain terdapat daerah denan kelahiran tinggi. Supiori dan Teluk Wondama mencatat TFR
+                      <span class="num">3,95</span>, lalu
+                      Tambrauw <span class="num">3,89</span>. Wilayah dengan TFR tinggi juga cenderung punya angka
+                      kematian bayi tinggi.
+                    </p>
+                  </div>
+                  <div class="step" data-step="3">
+                    <h3>Banyak Lansia di Selatan Jawa</h3>
+                    <p>Di beberapa wilayah selatan Jawa, jumlah penduduk berusia 65 tahun ke atas cukup tinggi.
+                      Gunungkidul memiliki persentase tertinggi sebesar<span class="num">15,7%</span>, diikuti Wonogiri
+                      <span class="num">15,3%</span>, Pacitan <span class="num">14,9%</span>, dan Magetan <span
+                        class="num">14,5%.</span>
+                    </p>
+                    <p class="step-note">Sebagai perbandingan, nilai tengah seluruh kabupaten/kota adalah 6,8%.</p>
+                  </div>
+                  <div class="step" data-step="4">
+                    <h3>Magnet usia kerja</h3>
+                    <p>Penduduk umur 20–39 tahun adalah kelompok yang paling sering pindah. Di Penajam Paser Utara,
+                      lokasi Ibu Kota Nusantara, kelompok ini mencapai</p><span class="big">49,3%</span>
+                    <p>dari total penduduk dan lebih tinggi dari median 31,2%. Morowali sebagai kawasan industri nikel
+                      memiliki 38,7% untuk kelompok umur yang sama dan didominasi laki - laki.</p>
+                  </div>
+                  <div class="step" data-step="5">
+                    <h3>Pola Wilayah Saling Berkaitan</h3>
+                    <p>Analisis LISA menunjukkan bahwa kondisi kabupaten/kota cenderung mirip dengan wilayah di
+                      sekitarnya. TFR tinggi ditemukan di Sumatera Utara, NTT, dan Papua, sedangkan TFR rendah
+                      terkonsentrasi di Jawa Timur, Jawa Tengah, dan Bali.</p><span class="big">Moran's I = 0,62</span>
+                    <p>Pada TFR, sebanyak 180 dari 514 kab/kota (35%) masuk klaster dan sisanya dekat dengan rata - rata
+                      nasional
+                    </p>
+                    <p class="step-note">p = 0,001 (signifikan), bobot 6 tetangga terdekat.</p>
+                  </div>
+                  <div class="step" data-step="6">
+                    <h3>Variabel dan Jumlah Penduduk</h3>
+                    <p>Peta ini menyajikan variabel (misal: TFR) dan jumlah penduduk secara bersamaan. <br> Jawa
+                      memiliki banyak wilayah dengan jumlah penduduk besar, sementara Papua dan Kalimantan umumnya
+                      memiliki jumlah penduduk lebih sedikit.</p>
+                  </div>
+                  <div class="step" data-step="7">
+                    <h3>Dua ukuran sekaligus</h3>
+                    <p>Peta bivariat menggabungkan TFR dan porsi umur 20–39. </p>
+                    <ul class="step-list">
+                      <li><i style="background:#C85A5A"></i>Merah: TFR tinggi tapi porsi umur 20–39
+                        rendah.</li>
+                      <li><i style="background:#64ACBE"></i>Biru: porsi umur 20–39 tinggi tapi TFR rendah, ciri umum
+                        daerah tujuan migran.</li>
+                      <li><i style="background:#574249"></i>Cokelat gelap: keduanya tinggi, banyak di Papua.</li>
+                      <li><i style="background:#E8E8E8"></i>Abu-abu muda: keduanya rendah, dominan di Jawa.</li>
+                    </ul>
+                  </div>
+                  <div class="step" data-step="8">
+                    <h3>Giliranmu menjelajah</h3>
+                    <p>Ganti indikator dan jenis peta di bilah atas, geser dan perbesar peta, atau ketik kab/kota untuk
+                      melihat struktur umurnya dan membandingkannya dengan daerah lain.</p>
+                  </div>
+                </div>
+              </div>
+              <div class="car-nav">
+                <button class="car-btn" data-dir="-1" aria-label="Kartu sebelumnya">‹</button>
+                <div class="car-dots"></div>
+                <span class="car-count">1 / 9</span>
+                <button class="car-btn" data-dir="1" aria-label="Kartu berikutnya">›</button>
+              </div>
+              <p class="car-hint">Tekan "›" untuk melanjutkan cerita. Peta berubah mengikuti
+                kartu.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel mt" id="tablePanel">
+          <h3>Tabel indikator 514 kabupaten/kota</h3>
+          <p class="p-sub">Urutkan dengan mengklik judul kolom. Klik baris untuk membuka daerah itu di peta.</p>
+          <div class="tbl-tools"><input type="search" id="tblSearch" placeholder="Saring nama kab/kota atau provinsi…"
+              aria-label="Saring tabel"><button class="btn" id="tblCsv">Unduh CSV</button></div>
+          <div class="scroll-x">
+            <table class="data" id="kabTable">
+              <thead></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <div class="pager" id="tblPager"></div>
+          <p class="cap">Sumber: BPS, SUPAS 2025: <a
+              href="https://www.bps.go.id/id/statistics-table/2/MjgwMiMy/angka-kelahiran-total-menurut-kabupaten-kota-hasil-supas.html"
+              target="_blank" rel="noopener">TFR</a>, <a
+              href="https://www.bps.go.id/id/statistics-table/2/MjgxMSMy/angka-kematian-bayi-menurut-kabupaten-kota--hasil-supas.html"
+              target="_blank" rel="noopener">IMR</a>, <a
+              href="https://www.bps.go.id/id/statistics-table/2/Mjc5MCMy/-jumlah-penduduk-menurut-kabupaten-kota-dan-kelompok-umur.html"
+              target="_blank" rel="noopener">penduduk menurut umur</a>, <a
+              href="https://www.bps.go.id/id/statistics-table/2/Mjc5MSMy/jumlah-penduduk-laki-laki-menurut-kabupaten-kota-dan-kelompok-umur-.html"
+              target="_blank" rel="noopener">laki-laki</a>, <a
+              href="https://www.bps.go.id/id/statistics-table/2/Mjc5MiMy/jumlah-penduduk-perempuan-menurut-kabupaten-kota-dan-kelompok-umur.html"
+              target="_blank" rel="noopener">perempuan</a> (diolah).</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= BAB 2 ================= -->
+    <section class="chapter dark" id="bab2">
+      <div class="wrap">
+        <div class="chap-head">
+          <p class="chap-kicker">Bab 2 <span class="topic-tag">Arus Migrasi Risen · 34 provinsi · Tahun 2020</span></p>
+          <h2>Ke mana penduduk bergerak?</h2>
+          <p>Sensus Penduduk 2020 mencatat provinsi tempat tinggal setiap orang lima tahun sebelumnya. Dari situ
+            terbentuk 1.091 pasangan arus asal–tujuan. Partikel yang bergerak di peta mengikuti arah perpindahan,
+            semakin
+            tebal garisnya maka semakin banyak orangnya.</p>
+        </div>
+
+        <div class="story flip" id="story2">
+          <div class="stage" id="flowStage">
+            <div class="stage-bar">
+              <label class="ctl-label" for="flowProv">Provinsi</label>
+              <select id="flowProv">
+                <option value="">Semua provinsi (arus terbesar)</option>
+              </select>
+              <div class="seg" id="flowDir" role="group" aria-label="Arah arus">
+                <button data-v="both" aria-pressed="true">Keduanya</button>
+                <button data-v="in">Masuk</button>
+                <button data-v="out">Keluar</button>
+              </div>
+              <div class="ctl-range"><label class="ctl-label" for="flowN">Arus terbesar: <span id="flowNval"
+                    class="num">50</span></label>
+                <input type="range" id="flowN" min="10" max="300" step="10" value="50">
+              </div>
+              <button class="btn" id="flowAnim" aria-pressed="true">Jeda animasi</button>
+            </div>
+            <div class="stage-body" id="flowBody">
+              <svg id="flowSvg" role="img" aria-label="Peta aliran migrasi antarprovinsi"></svg>
+              <canvas id="flowCanvas" aria-hidden="true"></canvas>
+              <div class="zoom-btns"><button id="fzIn" aria-label="Perbesar">+</button><button id="fzOut"
+                  aria-label="Perkecil">−</button><button id="fzReset" aria-label="Kembali">⌂</button></div>
+              <div class="legend" id="flowLegend"></div>
+            </div>
+            <div class="stage-cap">Sumber: BPS, <a
+                href="https://www.bps.go.id/id/publication/2023/07/20/97c956dd7ff3ece924911115/statistik-migrasi-indonesia-hasil-long-form-sensus-penduduk-2020.html"
+                target="_blank" rel="noopener">Statistik Migrasi Indonesia Hasil Long Form SP2020, Tabel 5.3</a>
+              (diolah).
+            </div>
+          </div>
+          <div class="story-side">
+            <div class="carousel" role="region" aria-roledescription="carousel" aria-label="Cerita arus migrasi"
+              tabindex="0">
+              <div class="car-viewport">
+                <div class="car-track">
+                  <div class="step" data-step="0">
+                    <h3>Banyak Penduduk Berpindah Provinsi</h3><span class="big">4.167.850</span>
+                    <p>orang tercatat tinggal di provinsi yang berbeda dibandingkan lima tahun sebelumnya. 50 arus
+                      terbesar mencakup 57% dari seluruh perpindahan.</p>
+                  </div>
+                  <div class="step out" data-step="1">
+                    <h3>Ke Mana Penduduk Jakarta Pindah?</h3>
+                    <p>Sebanyak 797.468 orang keluar dari DKI Jakarta. Tujuan terbanyak adalah Jawa Barat (339.634),
+                      Jawa Tengah (188.939), dan Banten (103.105).</p>
+                  </div>
+                  <div class="step" data-step="2">
+                    <h3>Pindah di Pulau yang Sama</h3><span class="big">62%</span>
+                    <p>arus antarprovinsi terjadi di dalam pulau yang sama, dan 42% di antara provinsi-provinsi di Jawa
+                      saja.</p>
+                  </div>
+                  <div class="step" data-step="3">
+                    <h3>Koridor Sumatera</h3>
+                    <p>Riau menerima 65.668 orang dari Sumatera Utara dan 21.359 orang dari Sumatera Barat. Selain itu,
+                      Kepulauan Riau menerima 24.366 orang dari Sumatera Utara.</p>
+                  </div>
+                  <div class="step" data-step="4">
+                    <h3>Arus Masuk Kalimantan Timur</h3>
+                    <p>Sebagian besar arus masuk ke Kalimantan Timur berasal dari luar Kalimantan. Sulawesi Selatan
+                      menyumbang 25.015 pendatang, disusul Jawa Timur sebanyak 18.237 orang.</p>
+                  </div>
+                  <div class="step" data-step="5">
+                    <h3>Giliranmu</h3>
+                    <p>Pilih provinsi di peta atau daftar, atur jumlah arus, dan bandingkan arus masuk dengan arus
+                      keluar. Matriks dan diagram chord di bawah ikut menyorot pilihanmu.</p>
+                  </div>
+                </div>
+              </div>
+              <div class="car-nav">
+                <button class="car-btn" data-dir="-1" aria-label="Kartu sebelumnya">‹</button>
+                <div class="car-dots"></div>
+                <span class="car-count">1 / 6</span>
+                <button class="car-btn" data-dir="1" aria-label="Kartu berikutnya">›</button>
+              </div>
+              <p class="car-hint">Tekan "›" untuk melanjutkan cerita. Peta berubah mengikuti kartu.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-2 mt">
+          <div class="panel chart">
+            <h3>Matriks asal–tujuan</h3>
+            <p class="p-sub">Baris = provinsi asal, kolom = provinsi tujuan, warna = jumlah migran. Perpindahan dalam
+              provinsi yang sama tidak ditampilkan</p>
+            <div class="panel-tools">
+              <div class="seg" id="odOrder"><button data-v="code" aria-pressed="true">Urut wilayah</button><button
+                  data-v="vol">Urut volume</button></div>
+            </div>
+            <div id="odChart"></div>
+            <p class="cap">Sumber: BPS, <a
+                href="https://www.bps.go.id/id/publication/2023/07/20/97c956dd7ff3ece924911115/statistik-migrasi-indonesia-hasil-long-form-sensus-penduduk-2020.html"
+                target="_blank" rel="noopener">Statistik Migrasi Indonesia Hasil Long Form SP2020</a>, Tabel 5.3
+              (diolah).</p>
+          </div>
+          <div class="panel chart">
+            <h3>Diagram chord antarprovinsi</h3>
+            <p class="p-sub">Busur luar = total arus provinsi, pita = arus perpindahan antarprovinsi, warna = pulau
+              asal. Arahkan
+              kursor atau klik provinsi.</p>
+            <div id="chordChart"></div>
+            <p class="cap">Sumber: BPS, <a
+                href="https://www.bps.go.id/id/publication/2023/07/20/97c956dd7ff3ece924911115/statistik-migrasi-indonesia-hasil-long-form-sensus-penduduk-2020.html"
+                target="_blank" rel="noopener">Statistik Migrasi Indonesia Hasil Long Form SP2020</a>, Tabel 5.3
+              (diolah).</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= BAB 3 ================= -->
+    <section class="chapter" id="bab3">
+      <div class="wrap">
+        <div class="chap-head">
+          <p class="chap-kicker">Bab 3 <span class="topic-tag">38 provinsi · Tahun 2025</span></p>
+          <h2>Pola Perpindahan Penduduk 2025</h2>
+          <p>SUPAS 2025 belum menyediakan matriks asal–tujuan, tetapi mencatat jumlah serta persentase migran masuk dan
+            keluar tiap provinsi. DKI Jakarta tetap
+            menjadi provinsi pelepas terbesar dengan persentase neto −5,40%, sedangkan Jawa Tengah memiliki jumlah neto
+            terbanyak, 638.865 orang.
+          </p>
+        </div>
+
+        <div class="grid-2-1">
+          <div class="panel chart">
+            <h3>Perpindahan Penduduk Setiap Provinsi</h3>
+            <p class="p-sub">Persentase dan jumlah migran risen 2025 per provinsi. Arahkan
+              kursor ke baris untuk melihat jumlah orangnya.</p>
+            <div class="panel-tools">
+              <div class="seg" id="dbSort"><button data-v="neto" aria-pressed="true">Urut dari magnet
+                  terbesar</button><button data-v="nama">Urut abjad</button></div>
+            </div>
+            <div id="dumbbell"></div>
+            <p class="cap">Papua Pegunungan: persentase migran masuk tidak tersedia (RSE &gt; 50%).<br>Sumber: BPS, <a
+                href="https://www.bps.go.id/id/statistics-table/1/MjI4MSMx/persentase-migran-masuk--migran-keluar--dan-migran-neto-risen-antarprovinsi--2025.html"
+                target="_blank" rel="noopener">Persentase Migran Masuk, Migran Keluar, dan Migran Neto Risen
+                Antarprovinsi 2025</a>; <a
+                href="https://www.bps.go.id/id/statistics-table/1/MjI4MCMx/jumlah-migran-masuk-risen--migran-keluar-risen--dan-migran-neto-risen-menurut-provinsi-dan-jenis-kelamin--2025.html"
+                target="_blank" rel="noopener">Jumlah Migran Masuk Risen, Migran Keluar Risen, dan Migran Neto Risen
+                2025</a>.</p>
+          </div>
+          <div>
+            <div class="panel chart">
+              <h3>Peta Migrasi Neto 2025</h3>
+              <p class="p-sub">Arahkan kursor ke peta untuk menyorot provinsi.</p>
+              <div id="netMap"></div>
+              <p class="cap">Sumber: BPS, <a
+                  href="https://www.bps.go.id/id/statistics-table/1/MjI4MSMx/persentase-migran-masuk--migran-keluar--dan-migran-neto-risen-antarprovinsi--2025.html"
+                  target="_blank" rel="noopener">Persentase Migran Masuk, Migran Keluar, dan Migran Neto Risen
+                  Antarprovinsi 2025</a></p>
+            </div>
+            <div class="panel chart mt">
+              <h3>Naik-turun peringkat 2020 → 2025</h3>
+              <p class="p-sub">Peringkat migrasi neto (1 = magnet terkuat). Dibandingkan menggunakan <b>peringkat</b>
+                karena periode, metode (sensus vs survei), dan jumlah provinsi berbeda.</p>
+              <div id="slope"></div>
+              <p class="note">* Papua dan Papua Barat: wilayah 2025 lebih kecil karena pemekaran 2022 (garis
+                putus-putus). Empat provinsi baru hanya punya peringkat 2025; Papua Pegunungan peringkat terakhir karena
+                data migran masuknya tidak tersedia.</p>
+              <p class="cap">Sumber: BPS, 2020: <a
+                  href="https://www.bps.go.id/id/publication/2023/07/20/97c956dd7ff3ece924911115/statistik-migrasi-indonesia-hasil-long-form-sensus-penduduk-2020.html"
+                  target="_blank" rel="noopener">Statistik Migrasi Indonesia Hasil Long Form SP2020, Tabel 5.3</a>
+                (diolah); 2025: <a
+                  href="https://www.bps.go.id/id/statistics-table/1/MjI4MSMx/persentase-migran-masuk--migran-keluar--dan-migran-neto-risen-antarprovinsi--2025.html"
+                  target="_blank" rel="noopener">Persentase Migran Masuk, Migran Keluar, dan Migran Neto Risen
+                  Antarprovinsi 2025</a>.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= BAB 4 ================= -->
+    <section class="chapter" id="bab4" style="background:#F1F4F8">
+      <div class="wrap">
+        <div class="chap-head">
+          <p class="chap-kicker">Bab 4 <span class="topic-tag">11 variabel · 37 provinsi</span></p>
+          <h2>Empat tipe provinsi</h2>
+          <p>Sebelas indikator migrasi, fertilitas, kematian bayi, struktur umur, kepadatan, dan ketimpangan diringkas
+            dengan analisis komponen utama (PCA), lalu dikelompokkan dengan klaster hierarki Ward.</p>
+        </div>
+        <div class="clusters" id="clusterCards"></div>
+        <div class="panel-tools"><button class="btn primary" id="tyReset">Reset seleksi</button></div>
+        <div class="ty-grid">
+          <div class="panel chart">
+            <h3>Peta Komponen Utama (Biplot)</h3>
+            <p class="p-sub" id="pcaSub"></p>
+            <div class="panel-tools">
+              <div class="seg" id="pcaArrows"><button data-v="1" aria-pressed="true">Tampilkan panah</button><button
+                  data-v="0">Sembunyikan</button></div>
+            </div>
+            <div id="pcaChart"></div>
+            <p class="cap"><br>Sumber: BPS, <a
+                href="https://www.bps.go.id/id/publication/2026/06/30/bdc814f38edf0a941f4f9d34/penduduk-dan-indikator-kependudukan-hasil-survei-penduduk-antar-sensus-2025.html"
+                target="_blank" rel="noopener">Penduduk dan Indikator Kependudukan Hasil SUPAS 2025</a>; <a
+                href="https://www.bps.go.id/id/statistics-table/2/OTgjMg==/gini-ratio-menurut-provinsi-dan-daerah.html"
+                target="_blank" rel="noopener">Gini Ratio menurut Provinsi dan Daerah, September 2025</a> (diolah).</p>
+          </div>
+          <div class="ty-side">
+            <div class="panel chart">
+              <h3>Sebaran kelompok di peta</h3>
+              <p class="p-sub">Klik provinsi untuk memilihnya dan melihat kembarannya.</p>
+              <div id="tyMap"></div>
+              <p class="cap">Papua Pegunungan tidak masuk PCA karena migran masuknya tidak tersedia. Batas wilayah:
+                LapakGIS/BIG (non-BPS).</p>
+            </div>
+            <div class="panel chart mt twin-panel">
+              <h3>Cari provinsi kembaranmu</h3>
+              <p class="p-sub">Pilih provinsi, lalu bandingkan bentuk profilnya dengan tiga provinsi yang paling mirip.
+              </p>
+              <select id="twinSel" aria-label="Pilih provinsi"></select>
+              <div class="twin-chips" id="twinChips"></div>
+              <div id="twinRadar"></div>
+              <div class="chart-legend" id="twinKey" style="justify-content:center"></div>
+              <p class="cap">Kemiripan = jarak terdekat pada 11 variabel terstandardisasi. Titik di luar lingkaran
+                putus-putus berarti di atas rata-rata.<br>Sumber: BPS, <a
+                  href="https://www.bps.go.id/id/publication/2026/06/30/bdc814f38edf0a941f4f9d34/penduduk-dan-indikator-kependudukan-hasil-survei-penduduk-antar-sensus-2025.html"
+                  target="_blank" rel="noopener">Penduduk dan Indikator Kependudukan Hasil SUPAS 2025</a>; <a
+                  href="https://www.bps.go.id/id/statistics-table/2/OTgjMg==/gini-ratio-menurut-provinsi-dan-daerah.html"
+                  target="_blank" rel="noopener">Gini Ratio menurut Provinsi dan Daerah, September 2025</a> (diolah).
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="panel chart mt">
+          <h3>Heatmap terklaster</h3>
+          <p class="p-sub">Nilai z-score: oranye di atas rata-rata, ungu di bawah rata-rata. Urutan baris mengikuti
+            dendrogram Ward; klik baris untuk memilih provinsi.</p>
+          <div class="scroll-x">
+            <div id="hmChart" style="min-width:560px"></div>
+          </div>
+          <p class="cap">Sumber: BPS, <a
+              href="https://www.bps.go.id/id/publication/2026/06/30/bdc814f38edf0a941f4f9d34/penduduk-dan-indikator-kependudukan-hasil-survei-penduduk-antar-sensus-2025.html"
+              target="_blank" rel="noopener">Penduduk dan Indikator Kependudukan Hasil SUPAS 2025</a> (diolah).</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= BAB 5 ================= -->
+    <section class="chapter" id="bab5">
+      <div class="wrap">
+        <div class="chap-head">
+          <p class="chap-kicker">Bab 5 <span class="topic-tag">Hierarki · pulau → provinsi → kab/kota</span></p>
+          <h2>Struktur berjenjang penduduk</h2>
+          <p>Peta memperlihatkan di mana suatu angka tinggi atau rendah, tetapi tidak memperlihatkan berapa banyak orang
+            di baliknya. Lebih dari separuh penduduk Indonesia (55,4%) tinggal di Pulau Jawa, sementara Papua dan Maluku
+            bersama-sama hanya menampung sekitar 3%. Karena itu, perubahan kecil pada angka kelahiran atau struktur umur
+            di Jawa menyangkut jauh lebih banyak orang dibanding perubahan besar di wilayah timur.</p>
+        </div>
+        <div class="panel chart">
+          <p class="p-sub">Luas kotak dan irisan = jumlah penduduk; warna = indikator yang dipilih. Klik kotak atau
+            irisan untuk masuk satu tingkat (pulau → provinsi → kab/kota), dan klik penunjuk posisi di atas grafik untuk
+            kembali.</p>
+          <div class="panel-tools">
+            <label class="ctl-label" for="hierVar">Warna</label>
+            <select id="hierVar">
+              <option value="tfr">TFR</option>
+              <option value="lansia_65plus">% umur 65+</option>
+              <option value="umur_20_39">% umur 20–39</option>
+              <option value="rasio_ketergantungan">Rasio ketergantungan</option>
+              <option value="imr">Angka kematian bayi</option>
+            </select>
+            <span class="ctl-label">Ukuran = jumlah penduduk</span>
+          </div>
+          <nav class="crumbs" id="crumbs" aria-label="Penunjuk posisi"></nav>
+          <div class="grid-2-1">
+            <div id="treemap"></div>
+            <div id="sunburst"></div>
+          </div>
+          <div class="legend" id="hierLegend" style="position:static;display:inline-block;margin-top:10px"></div>
+          <p class="cap">Sumber: BPS, <a
+              href="https://www.bps.go.id/id/publication/2026/06/30/bdc814f38edf0a941f4f9d34/penduduk-dan-indikator-kependudukan-hasil-survei-penduduk-antar-sensus-2025.html"
+              target="_blank" rel="noopener">Penduduk dan Indikator Kependudukan Hasil SUPAS 2025</a> (diolah).</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= PENUTUP ================= -->
+    <section class="chapter" id="jelajah" style="background:#F1F4F8">
+      <div class="wrap">
+        <div class="chap-head">
+          <p class="chap-kicker">Penutup</p>
+          <h2>Jelajahi daerahmu</h2>
+          <p>Pilih kabupaten/kota asalmu atau tempat tinggalmu sekarang. Ringkasan di bawah dibuat otomatis dari data
+            yang sama dengan seluruh cerita ini.</p>
+        </div>
+        <div>
+          <div class="panel-tools"><input type="search" id="exSearch" list="kabList" placeholder="Ketik nama kab/kota…"
+              aria-label="Pilih kabupaten/kota" style="min-width:260px"><button class="btn primary"
+              id="exGo">Tampilkan</button><button class="btn" id="exRand">Acak</button></div>
+          <article class="story-card" id="storyCard"></article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= SUMBER DATA ================= -->
+    <section class="chapter" id="metodologi">
+      <div class="wrap">
+        <div class="chap-head">
+          <p class="chap-kicker">Tentang data</p>
+          <h2>Dari tabel BPS menjadi cerita</h2>
+          <p>Seluruh visual di halaman ini dibangun dari tabel dan publikasi resmi BPS, ditambah batas wilayah digital.
+            Berikut alur pengolahannya, sumber yang dipakai setiap bab, dan hal-hal yang perlu diingat saat membaca
+            hasilnya.</p>
+        </div>
+
+        <div class="meta-head">
+          <h3 class="meta-h">Sumber data <span class="ctl-label" id="metaCount"></span></h3>
+        </div>
+        <div class="meta-grid" id="metaGrid"></div>
+
+        <h3 class="meta-h">Perlu diingat saat membaca</h3>
+        <dl class="notes">
+          <div>
+            <dt>Beda periode</dt>
+            <dd>Arus asal–tujuan berasal dari LF SP2020 (34 provinsi), indikator lain dari SUPAS 2025 (38 provinsi).
+              Keduanya dibandingkan lewat peringkat, tidak dihitung silang.</dd>
+          </div>
+          <div>
+            <dt>Beda tingkat wilayah</dt>
+            <dd>Migrasi 2025 hanya tersedia per provinsi. Status magnet atau pelepas provinsi tidak otomatis berlaku
+              untuk setiap kab/kotanya.</dd>
+          </div>
+          <div>
+            <dt>Survei sampel</dt>
+            <dd>Nilai kab/kota kecil punya galat sampling lebih besar. Migran masuk Papua Pegunungan tidak tersedia (RSE
+              &gt; 50%).</dd>
+          </div>
+          <div>
+            <dt>Korelasi, bukan sebab-akibat</dt>
+            <dd>Porsi umur 20–39 bisa menjadi akibat sekaligus penyebab migrasi. Semua hubungan dibaca sebagai asosiasi.
+            </dd>
+          </div>
+          <div>
+            <dt>Peta disederhanakan</dt>
+            <dd>Garis batas disederhanakan dan pulau sangat kecil dihapus agar ringan; peta tidak untuk keperluan batas
+              resmi.</dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-foot">
+    <div class="wrap">
+      <div><b style="font-family:var(--serif);font-size:18px;color:#fff">Jejak Perpindahan</b><br>Proyek UAS
+        Visualisasi Data dan Informasi, Politeknik Statistika STIS, 2026.<br>Kessya Desyka Ayliyanda (222313163), kelas
+        3SD2.</div>
+      <div>Sumber data utama: BPS (Badan Pusat Statistik).<br><a id="repoLink" href="https://github.com/"
+          target="_blank" rel="noopener">Repositori kode dan data</a></div>
+    </div>
+  </footer>
+
+  <div class="tip" id="tip" role="tooltip"></div>
+
+  <script src="lib/d3.v7.min.js"></script>
+  <script src="data/data.js"></script>
+  <script src="js/core.js"></script>
+  <script src="js/hero.js"></script>
+  <script src="js/carousel.js"></script>
+  <script src="js/ch1_map.js"></script>
+  <script src="js/ch2_flow.js"></script>
+  <script src="js/ch3_magnet.js"></script>
+  <script src="js/ch4_typology.js"></script>
+  <script src="js/ch5_hier.js"></script>
+  <script src="js/ch6_explore.js"></script>
+  <script src="js/ch7_meta.js"></script>
+  <script src="js/main.js"></script>
+</body>
+
+</html>
